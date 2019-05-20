@@ -13,8 +13,8 @@ def make_xml_anno(json_file, xml_dir, img_dir):
     count = 0
     for fname, label in json_data.iteritems():
         count += 1
-        if count >5:
-            break
+        #if count >5:
+        #    break
         print count, fname
 
         basename, file_extension = os.path.splitext(fname)
