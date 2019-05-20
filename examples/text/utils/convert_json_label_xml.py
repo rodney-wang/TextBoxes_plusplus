@@ -2,6 +2,7 @@
 import os
 import json
 import cv2
+import glob
 import argparse
 
 
@@ -81,7 +82,19 @@ def make_xml_anno(json_file, xml_dir, img_dir):
             os.remove(xml_path)
 
 
+def write_train_list_file(img_dir, xml_dir, list_file):
 
+    xml_files = glob.glob(os.path.join(xml_dir, "*.xml"))
+
+    with open(list_file, 'w') as f:
+        for xmlfile in xml_files:
+            bname = os.path.basename(xmlfile)
+            img_name = bname.replace('.xml', '.jpg')
+            #xml_path = os.path.join('data/plate_detection/annotations/xml_wanda_0921', bname)
+            #img_path = os.path.join('data/plate_detection/images/images_sub', img_name)
+            img_path = os.path.join(img_dir, img_name)
+            f.write(' '.join(img_path, xmlfile))
+        f.close()
 
 
 def parse_args():
@@ -92,13 +105,14 @@ def parse_args():
                        type=str, help='Output plate label dir')
     parser.add_argument('--xml_dir', default='/ssd/wfei/data/plate_detection/annotations/xml_wanda_0921',
                         type=str, help='Output xml annotation dir')
+    parser.add_argument('--list_file', default='/mnt/soulfs2/wfei/code/TextBoxes_plusplus/data/text/train_wanda_0921.txt',
+                        type=str, help='List of image + xml (label) pair paths, which is used for conversion into lmdb')
     args = parser.parse_args()
     return args
-
-
 
 if __name__ == '__main__':
 
     args = parse_args()
-    make_xml_anno(args.json, args.xml_dir, args.img_dir)
+    #make_xml_anno(args.json, args.xml_dir, args.img_dir)
+    write_train_list_file(args.img_dir, args.xml_dir, args.list_file)
 
