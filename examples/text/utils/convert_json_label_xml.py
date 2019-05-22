@@ -87,14 +87,16 @@ def write_train_list_file(img_dir, xml_dir, list_file):
     xml_files = glob.glob(os.path.join(xml_dir, "*.xml"))
 
     with open(list_file, 'w') as f:
-        for xmlfile in xml_files:
+        for idx, xmlfile in enumerate(xml_files):
             bname = os.path.basename(xmlfile)
+            if idx %1000 ==0:
+                print idx, bname
             img_name = bname.replace('.xml', '.jpg')
             #xml_path = os.path.join('data/plate_detection/annotations/xml_wanda_0921', bname)
             #img_path = os.path.join('data/plate_detection/images/images_sub', img_name)
             img_path = os.path.join(img_dir, img_name)
-            f.write(' '.join(img_path, xmlfile))
-        f.close()
+            if os.path.exists(img_path) and os.path.exists(xmlfile):
+                f.write(' '.join([img_path, xmlfile])+'\n')
 
 
 def parse_args():

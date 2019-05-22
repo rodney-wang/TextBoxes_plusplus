@@ -55,12 +55,12 @@ def AddExtraLayers(net, use_batchnorm=True, lr_mult=1):
 
 config = {
 	'run_soon': True,
-	'resume_training': True,
+	'resume_training': False,
 	'remove_old_models': False,
 	'denser_prior_boxes': True,
 	'use_polygon': True,
-	'train_data': "./data/train_lmdb/",
-	'test_data': "./data/test_lmdb/",
+	'train_data': "./data/lmdb/lmdb/text_train_wanda_0921_lmdb/",
+	'test_data': "./data/lmdb/lmdb/text_test_wanda_0921_lmdb/",
 	'resize_width': 384,
 	'resize_height': 384,
 	'lr_mult': 1,
@@ -85,7 +85,8 @@ snapshot_dir = "models/VGGNet/text/{}".format(job_name)
 # Directory which stores the job script and log file.
 job_dir = "jobs/VGGNet/text/{}".format(job_name)
 # Directory which stores the detection results.
-output_result_dir = "{}/data/text/results/text/{}/Main".format(os.environ['HOME'], job_name)
+#output_result_dir = "{}/data/text/results/text/{}/Main".format(os.environ['HOME'], job_name)
+output_result_dir = "./data/text/results/text/{}/Main".format(job_name)
 
 # model definition files.
 train_net_file = "{}/train.prototxt".format(save_dir)
@@ -301,7 +302,7 @@ else:
 
 # Solver parameters.
 # Defining which GPUs to use.
-gpus = "2,3"
+gpus = "7"
 gpulist = gpus.split(",")
 num_gpus = len(gpulist)
 

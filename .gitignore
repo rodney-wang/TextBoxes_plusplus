@@ -1,2 +1,6 @@
 *.pyc
+*.txt
+*.caffemodel
+*.h7
+data/*
 .idea/*

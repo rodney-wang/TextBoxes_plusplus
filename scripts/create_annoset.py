@@ -1,12 +1,13 @@
 import argparse
 caffe_root = './'  # this file is expected to be in {caffe_root}/examples
 import os
-os.chdir(caffe_root)
+#os.chdir(caffe_root)
 import sys
-sys.path.insert(0, 'python')
+#sys.path.insert(0, 'python')
 import caffe
 import shutil
 import subprocess
+#sys.path.insert(0,"/mnt/soulfs2/wfei/code/TextBoxes_plusplus/python")
 
 from caffe.proto import caffe_pb2
 from google.protobuf import text_format
