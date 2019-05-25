@@ -55,7 +55,7 @@ def AddExtraLayers(net, use_batchnorm=True, lr_mult=1):
 
 config = {
 	'run_soon': True,
-	'resume_training': False,
+	'resume_training': True,
 	'remove_old_models': False,
 	'denser_prior_boxes': True,
 	'use_polygon': True,
@@ -65,7 +65,7 @@ config = {
 	'resize_height': 384,
 	'lr_mult': 1,
 	'base_lr': 0.0001,
-	'pretrain_model': "models/model_pre_train_syn.caffemodel",
+	'pretrain_model': "models/VGG_text_text_polygon_precise_fix_order_384x384_iter_25000.caffemodel",
 	'label_map_file': "data/text/labelmap_voc.prototxt",
 	'flip': True,
 	'clip': False,
@@ -79,7 +79,7 @@ job_name = "text_polygon_precise_fix_order_{}".format(resize)
 model_name = "VGG_text_{}".format(job_name)
 
 # Directory which stores the model .prototxt file.
-save_dir = "models/VGGNet/text/{}".format(job_name)
+save_dir = "models/VGGNet/plate/{}".format(job_name)
 # Directory which stores the snapshot of models.
 snapshot_dir = "models/VGGNet/text/{}".format(job_name)
 # Directory which stores the job script and log file.
@@ -302,7 +302,7 @@ else:
 
 # Solver parameters.
 # Defining which GPUs to use.
-gpus = "7"
+gpus = "3,4,5,6,7"
 gpulist = gpus.split(",")
 num_gpus = len(gpulist)
 
