@@ -94,7 +94,7 @@ class PlateDet:
         top_x4 = det_x4[top_indices]
         top_y4 = det_y4[top_indices]
 
-        print top_x1, top_y1, top_x2, top_y2
+        #print top_x1, top_y1, top_x2, top_y2
         bboxes = []
         for i in xrange(top_conf.shape[0]):
             x1 = int(round(top_x1[i] * image_width))
@@ -105,7 +105,7 @@ class PlateDet:
             y3 = int(round(top_y3[i] * image_height))
             x4 = int(round(top_x4[i] * image_width))
             y4 = int(round(top_y4[i] * image_height))
-            print x1, y1, x2, y2, x3, y3, x4, y4
+            #print x1, y1, x2, y2, x3, y3, x4, y4
             x1 = max(1, min(x1, image_width - 1))
             x2 = max(1, min(x2, image_width - 1))
             x3 = max(1, min(x3, image_width - 1))
@@ -117,7 +117,7 @@ class PlateDet:
             score = top_conf[i]
             bbox = [x1, y1, x2, y2, x3, y3, x4, y4, score]
             bboxes.append(bbox)
-        print bboxes    
+        #print bboxes
         bboxes_sorted = sorted(bboxes, key=lambda item: item[8])
         return bboxes_sorted
 
@@ -134,15 +134,15 @@ class PlateDet:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--image', default='20190430')
+    parser.add_argument('-i', '--image', default='/ssd/wfei/data/plate_detection/images/images_sub/ch13021_20180921104417-00000007-00005383.jpg')
     opt = parser.parse_args()
 
     test_img = '/ssd/wfei/data/plate_for_label/wanda_10k/wanda_10k_filtered/1543391448985023026.jpg'
-    model_path = '/mnt/soulfs2/wfei/code/TextBoxes_plusplus/models/VGGNet/plate/text_polygon_precise_fix_order_384x384/VGG_text_text_polygon_precise_fix_order_384x384_iter_100000.caffemodel'
+    model_path = '/mnt/soulfs2/wfei/code/TextBoxes_plusplus/models/VGGNet/plate_0526/text_polygon_precise_fix_order_384x384/VGG_text_text_polygon_precise_fix_order_384x384_iter_100000.caffemodel'
     #model_path ='./models/model_pre_train_syn.caffemodel'
     pdet = PlateDet(model_path)
     results = pdet(opt.image)
     print results
-    results = pdet(test_img)
-    print results
+    #results = pdet(test_img)
+    #print results
 
