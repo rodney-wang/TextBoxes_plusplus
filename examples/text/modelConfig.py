@@ -59,13 +59,14 @@ config = {
 	'remove_old_models': False,
 	'denser_prior_boxes': True,
 	'use_polygon': True,
-	'train_data': "./data/lmdb/lmdb/text_train_wanda_0921_lmdb/",
+	'train_data': "./data/lmdb/lmdb/text_train_list_0526_lmdb/",
 	'test_data': "./data/lmdb/lmdb/text_test_wanda_0921_lmdb/",
 	'resize_width': 384,
 	'resize_height': 384,
 	'lr_mult': 1,
 	'base_lr': 0.0001,
-	'pretrain_model': "models/VGG_text_text_polygon_precise_fix_order_384x384_iter_25000.caffemodel",
+	#'pretrain_model': "models/model_pre_train_syn.caffemodel",
+	'pretrain_model': "models/VGG_text_text_polygon_precise_fix_order_384x384_iter_100000.caffemodel",
 	'label_map_file': "data/text/labelmap_voc.prototxt",
 	'flip': True,
 	'clip': False,
@@ -79,9 +80,9 @@ job_name = "text_polygon_precise_fix_order_{}".format(resize)
 model_name = "VGG_text_{}".format(job_name)
 
 # Directory which stores the model .prototxt file.
-save_dir = "models/VGGNet/plate/{}".format(job_name)
+save_dir = "models/VGGNet/plate_0526/{}".format(job_name)
 # Directory which stores the snapshot of models.
-snapshot_dir = "models/VGGNet/text/{}".format(job_name)
+snapshot_dir = "models/VGGNet/plate_0526/{}".format(job_name)
 # Directory which stores the job script and log file.
 job_dir = "jobs/VGGNet/text/{}".format(job_name)
 # Directory which stores the detection results.
@@ -302,7 +303,7 @@ else:
 
 # Solver parameters.
 # Defining which GPUs to use.
-gpus = "3,4,5,6,7"
+gpus = "1,2,3,4,5,6,7"
 gpulist = gpus.split(",")
 num_gpus = len(gpulist)
 

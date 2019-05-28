@@ -31,6 +31,9 @@ def make_xml_anno(json_file, xml_dir, img_dir):
         f.write(line)
         im_path = os.path.join(img_dir, fname)
         im = cv2.imread(im_path)
+        if im is None: 
+            os.remove(xml_path)
+            continue
         (height, width, depth) = im.shape
         #(height, width, depth) = (70,200, 3)
 
@@ -115,6 +118,6 @@ def parse_args():
 if __name__ == '__main__':
 
     args = parse_args()
-    #make_xml_anno(args.json, args.xml_dir, args.img_dir)
+    make_xml_anno(args.json, args.xml_dir, args.img_dir)
     write_train_list_file(args.img_dir, args.xml_dir, args.list_file)
 

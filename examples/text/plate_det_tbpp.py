@@ -1,7 +1,8 @@
 #coding=utf-8
 import numpy as np
 import caffe
-import nms
+from nms import nms
+import argparse
 #from fast_rcnn.test import im_detect
 #from fast_rcnn.nms_wrapper import nms, soft_nms
 
@@ -17,6 +18,7 @@ class PlateDet:
 
         model_fold = '/mnt/soulfs2/wfei/code/TextBoxes_plusplus/models/'
         prototxt = model_fold + 'deploy_384x384.prototxt'
+        prototxt = model_fold + 'deploy.prototxt'
         self.net = caffe.Net(prototxt, caffemodel, caffe.TEST)
         self.det_score_threshold = det_score_threshold
         self.overlap_threshold = overlap_threshold
@@ -44,11 +46,12 @@ class PlateDet:
         net.blobs['data'].reshape(1, 3, siz, siz)
 
         image = caffe.io.load_image(img)
+        image_height, image_width, channels=image.shape
         transformed_image = transformer.preprocess('data', image)
         net.blobs['data'].data[...] = transformed_image
 
         detections = net.forward()['detection_out']
-        bboxes = self.extract_detections(detections, self.det_score_threshold, siz, siz)
+        bboxes = self.extract_detections(detections, self.det_score_threshold, image_height, image_width )
         # apply non-maximum suppression
         results = self.apply_quad_nms(bboxes, self.overlap_threshold)
 
@@ -91,6 +94,7 @@ class PlateDet:
         top_x4 = det_x4[top_indices]
         top_y4 = det_y4[top_indices]
 
+        print top_x1, top_y1, top_x2, top_y2
         bboxes = []
         for i in xrange(top_conf.shape[0]):
             x1 = int(round(top_x1[i] * image_width))
@@ -101,6 +105,7 @@ class PlateDet:
             y3 = int(round(top_y3[i] * image_height))
             x4 = int(round(top_x4[i] * image_width))
             y4 = int(round(top_y4[i] * image_height))
+            print x1, y1, x2, y2, x3, y3, x4, y4
             x1 = max(1, min(x1, image_width - 1))
             x2 = max(1, min(x2, image_width - 1))
             x3 = max(1, min(x3, image_width - 1))
@@ -112,6 +117,7 @@ class PlateDet:
             score = top_conf[i]
             bbox = [x1, y1, x2, y2, x3, y3, x4, y4, score]
             bboxes.append(bbox)
+        print bboxes    
         bboxes_sorted = sorted(bboxes, key=lambda item: item[8])
         return bboxes_sorted
 
@@ -127,10 +133,16 @@ class PlateDet:
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-i', '--image', default='20190430')
+    opt = parser.parse_args()
 
-    test_img = '/ssd/wfei/data/plate_for_label/wanda_10k/wanda_10k_filtered/1540722158754090215.jpg'
-    model_path = '/mnt/soulfs2/wfei/code/TextBoxes_plusplus/models/VGGNet//text/text_polygon_precise_fix_order_384x384/VGG_text_text_polygon_precise_fix_order_384x384_iter_120000.caffemodel'
+    test_img = '/ssd/wfei/data/plate_for_label/wanda_10k/wanda_10k_filtered/1543391448985023026.jpg'
+    model_path = '/mnt/soulfs2/wfei/code/TextBoxes_plusplus/models/VGGNet/plate/text_polygon_precise_fix_order_384x384/VGG_text_text_polygon_precise_fix_order_384x384_iter_100000.caffemodel'
+    #model_path ='./models/model_pre_train_syn.caffemodel'
     pdet = PlateDet(model_path)
+    results = pdet(opt.image)
+    print results
     results = pdet(test_img)
     print results
 
