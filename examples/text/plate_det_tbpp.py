@@ -12,7 +12,7 @@ class PlateDet:
     #    self.net = self._init_det()
 
     def __init__(self, caffemodel, det_score_threshold=0.2, overlap_threshold=0.2):
-        GPU_ID = 0
+        GPU_ID =3 
         caffe.set_mode_gpu()
         caffe.set_device(GPU_ID)
 
@@ -53,9 +53,10 @@ class PlateDet:
         detections = net.forward()['detection_out']
         bboxes = self.extract_detections(detections, self.det_score_threshold, image_height, image_width )
         # apply non-maximum suppression
-        results = self.apply_quad_nms(bboxes, self.overlap_threshold)
+        #results = self.apply_quad_nms(bboxes, self.overlap_threshold)
 
-        return results
+        #return results
+        return bboxes
 
         """
         dets = im_detect(net, img, siz)

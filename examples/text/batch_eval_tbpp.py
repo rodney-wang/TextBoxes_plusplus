@@ -6,9 +6,9 @@ import json
 import argparse
 import codecs
 import numpy as np
-#from nms import polygon_iou
+from nms import polygon_iou
 from plate_det_tbpp import PlateDet
-
+import pdb
 #os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 """
@@ -31,12 +31,17 @@ def tbpp_eval_end2end(label_json, img_dir, out_json, model_path):
         #    break
         print "### ", count, fname
         for lab in label:
-            ocr = lab['text'].strip().decode('utf8')
-            if ocr[0] in prov:
+            ocr = lab['text'].strip().encode('utf8')
+            #pdb.set_trace()
+            if ocr[0:3] in provinces:
                  print ocr, len(ocr)
                  cor = lab["coordinates"]
+        if len(cor) != 8:
+            continue
 
         img_path = os.path.join(img_dir, fname)
+        if not os.path.exists(img_path):
+            continue
         results = pdet(img_path)
         if len(results) == 0:
             continue
@@ -44,10 +49,12 @@ def tbpp_eval_end2end(label_json, img_dir, out_json, model_path):
         score   = results[0][8]
         json_data = {'text': ocr,
                      'coordinates': corners,
-                     'score': score}
+                     'score': str(score)}
         diff_avg = np.mean(np.abs(np.array(corners) - np.array(cor)))
+        iou = polygon_iou(corners, cor)
         print "\tLabels: ", cor
         print "\tResults:", corners
+        print "\tIOU:    ", iou
         print "\tAverage diff", diff_avg, " Score =", score
         tbpp_res[fname] = json_data
     print("--- %s seconds ---" % (time.time() - start_time))
