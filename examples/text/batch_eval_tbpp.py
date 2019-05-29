@@ -60,9 +60,9 @@ def tbpp_eval_end2end(label_json, img_dir, out_json, model_path):
         tbpp_res[fname] = json_data
     print("--- %s seconds ---" % (time.time() - start_time))
 
-    #with codecs.open(out_json, 'w') as f:
-    #     json.dump(tbpp_res, f, indent=4)
-    #     print "\n #### Plate labels are written to:", out_json
+    with codecs.open(out_json, 'w') as f:
+         json.dump(tbpp_res, f, indent=4)
+         print "\n #### Plate labels are written to:", out_json
     #eval(ocrtxt_file, out_dir, skip)
 
 def parse_args():
