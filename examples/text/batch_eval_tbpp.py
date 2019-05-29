@@ -14,7 +14,7 @@ import pdb
 """
  Process all plates in benchmark
 """
-provinces = ["皖", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "苏", "浙", "京", "闽", "赣", "鲁", "豫", "鄂", "湘", "粤", "桂", "琼", "川", "贵", "云", "藏", "陕", "甘", "青", "宁", "新", "警", "学"]
+provinces = ["皖", "沪", "津", "渝", "冀", "晋", "蒙", "辽", "吉", "黑", "苏", "浙", "京", "闽", "赣", "鲁", "豫", "鄂", "湘", "粤", "桂", "琼", "川", "贵", "云", "藏", "陕", "甘", "青", "宁", "新", "警", "学", "不"]
 prov = [i.decode('utf8') for i in provinces]
 
 def tbpp_eval_end2end(label_json, img_dir, out_json, model_path):
@@ -30,13 +30,14 @@ def tbpp_eval_end2end(label_json, img_dir, out_json, model_path):
         # if count >5:
         #    break
         print "### ", count, fname
+        cor =[]
         for lab in label:
             ocr = lab['text'].strip().encode('utf8')
             #pdb.set_trace()
             if ocr[0:3] in provinces:
                  print ocr, len(ocr)
                  cor = lab["coordinates"]
-        if len(cor) != 8:
+        if len(cor) < 8:
             continue
 
         img_path = os.path.join(img_dir, fname)
@@ -59,9 +60,9 @@ def tbpp_eval_end2end(label_json, img_dir, out_json, model_path):
         tbpp_res[fname] = json_data
     print("--- %s seconds ---" % (time.time() - start_time))
 
-    with codecs.open(out_json, 'w') as f:
-         json.dump(tbpp_res, f, indent=4)
-         print "\n #### Plate labels are written to:", out_json
+    #with codecs.open(out_json, 'w') as f:
+    #     json.dump(tbpp_res, f, indent=4)
+    #     print "\n #### Plate labels are written to:", out_json
     #eval(ocrtxt_file, out_dir, skip)
 
 def parse_args():

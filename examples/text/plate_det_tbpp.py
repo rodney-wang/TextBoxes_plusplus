@@ -3,6 +3,7 @@ import numpy as np
 import caffe
 from nms import nms
 import argparse
+import time
 #from fast_rcnn.test import im_detect
 #from fast_rcnn.nms_wrapper import nms, soft_nms
 
@@ -36,6 +37,7 @@ class PlateDet:
         results: num_box x 5
         """
         net = self.net
+        #start_time = time.time()
         transformer = caffe.io.Transformer({'data': (1, 3, siz, siz)})
         transformer.set_transpose('data', (2, 0, 1))
         transformer.set_mean('data', np.array([104, 117, 123]))  # mean pixel
@@ -44,33 +46,18 @@ class PlateDet:
         transformer.set_channel_swap('data', (2, 1, 0))  # the reference model has channels in BGR order instead of RGB
 
         net.blobs['data'].reshape(1, 3, siz, siz)
-
         image = caffe.io.load_image(img)
         image_height, image_width, channels=image.shape
         transformed_image = transformer.preprocess('data', image)
         net.blobs['data'].data[...] = transformed_image
-
         detections = net.forward()['detection_out']
         bboxes = self.extract_detections(detections, self.det_score_threshold, image_height, image_width )
+        #print("--- %s seconds ---" % (time.time() - start_time))
         # apply non-maximum suppression
         #results = self.apply_quad_nms(bboxes, self.overlap_threshold)
 
         #return results
         return bboxes
-
-        """
-        dets = im_detect(net, img, siz)
-        inds = np.where(dets[:, -1] == 1)[0]
-        cls_dets2 = []
-        if inds.shape[0] > 0:
-            cls_dets = dets[inds, :-1].astype(np.float32)
-            confidence_threshold = 0.00999999977648
-            keep = soft_nms(cls_dets, sigma=0.5, Nt=0.30, threshold=confidence_threshold, method=1)
-            cls_dets = cls_dets[keep, :]
-            index = np.where(cls_dets[:, -1] > 0.3)[0]
-            cls_dets2 = cls_dets[index, :]
-        return cls_dets2
-        """
 
 
     def extract_detections(self, detections, det_score_threshold, image_height, image_width):
@@ -144,6 +131,6 @@ if __name__ == '__main__':
     pdet = PlateDet(model_path)
     results = pdet(opt.image)
     print results
-    #results = pdet(test_img)
-    #print results
+    results = pdet(test_img)
+    print results
 
